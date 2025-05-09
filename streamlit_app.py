@@ -1,7 +1,14 @@
+import os
 import streamlit as st
 import openai
 from datetime import datetime
 from config import SYSTEM_MESSAGE, MODEL_NAME, TEMPERATURE, MAX_TOKENS, MAX_MEMORY_MESSAGES
+
+# Get API key from environment variable
+openai_api_key = os.environ.get("OPENAI_API_KEY")
+if not openai_api_key:
+    st.error("❌ OPENAI_API_KEY environment variable not found. Please set it in Streamlit Cloud settings.")
+    st.stop()
 
 # Set page config
 st.set_page_config(
@@ -17,24 +24,6 @@ st.markdown("Chat with the AI - Using 4o mini LLM model")
 # Initialize session state variables
 if "messages" not in st.session_state:
     st.session_state.messages = []
-
-if "openai_api_key" not in st.session_state:
-    st.session_state.openai_key = ""
-
-# Sidebar for API key input
-with st.sidebar:
-    st.header("Configuration")
-    api_key = st.text_input("Enter your OpenAI API Key:", type="password")
-    if api_key:
-        st.session_state.openai_key = api_key
-        openai.api_key = api_key
-    
-    # Add a reset button
-    if st.button("Reset Chat"):
-        st.session_state.messages = []
-        st.rerun()
-
-# System message is imported from config.py
 
 # Display chat messages
 for message in st.session_state.messages:
