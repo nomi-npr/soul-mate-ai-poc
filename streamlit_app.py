@@ -25,6 +25,24 @@ st.markdown("Chat with the AI - Using 4o mini LLM model")
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
+if "openai_api_key" not in st.session_state:
+    st.session_state.openai_key = openai_api_key
+
+# Sidebar for API key input
+with st.sidebar:
+    st.header("Configuration")
+    api_key = st.text_input("Enter your OpenAI API Key:", type="password")
+    if api_key:
+        st.session_state.openai_key = api_key
+        openai.api_key = api_key
+    
+    # Add a reset button
+    if st.button("Reset Chat"):
+        st.session_state.messages = []
+        st.rerun()
+
+# System message is imported from config.py
+
 # Display chat messages
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
